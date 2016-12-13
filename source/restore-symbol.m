@@ -56,12 +56,20 @@ void restore_symbol(NSString * inpath, NSString *outpath, NSString *jsonPath, bo
     }
     
     
+    BOOL isDirectory = NO;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:outpath isDirectory:&isDirectory]) {
+        if (isDirectory) {
+            outpath = [outpath stringByAppendingPathComponent:@"restore-symbol_file"];
+            restore_symbol(inpath, outpath, jsonPath, oc_detect_enable, replace_restrict);
+            return;
+        }
+        else
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:outpath error:nil];
+        }
+    }
+    
     fprintf(stderr, "=========== Start =============\n");
-    
-    
-    
-    
-    [[NSFileManager defaultManager] removeItemAtPath:outpath error:nil];
     
     NSMutableData * outData = [[NSMutableData alloc] initWithContentsOfFile:inpath];
     
